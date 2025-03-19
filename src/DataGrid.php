@@ -2342,7 +2342,7 @@ class DataGrid extends Control
 	{
 		$columns = $this->getSessionData('_grid_hidden_columns');
 
-		if ($columns !== []) {
+		if (!empty($columns)) {
 			$pos = array_search($column, $columns, true);
 
 			if ($pos !== false) {
