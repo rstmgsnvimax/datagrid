@@ -1121,6 +1121,8 @@ class Datagrid extends Control
 
 	public function createComponentFilter(): Form
 	{
+		$this->redirectBackLink($this->getName());
+		
 		$form = new Form($this, 'filter');
 
 		$form->setMethod(static::$formMethod);
@@ -2954,5 +2956,30 @@ class Datagrid extends Control
 	{
 		return $this->getPresenter();
 	}
+
+	private function redirectBackLink(string $gridName): void
+    {
+        $request = $this->getPresenterInstance()->getRequest();
+        if (!$request->hasFlag('restored') && !$request->isMethod('POST')) {
+            return;
+        }
+        $parameters = $request->getParameters();
+        $postFilters = $request->getPost('filter');
+        if (!is_array($postFilters)) {
+            $this->getPresenterInstance()->redirect('this', $parameters);
+        }
+        foreach ($postFilters as $filterName => $filterValue) {
+            if (($filterValue['from'] ?? null)) {
+                $parameters[$gridName . '-filter'][$filterName]['from'] = $filterValue;
+            }
+            if (($filterValue['to'] ?? null)) {
+                $parameters[$gridName . '-filter'][$filterName]['to'] = $filterValue;
+            }
+            if ($filterValue) {
+                $parameters[$gridName . '-filter'][$filterName] = $filterValue;
+            }
+        }
+        $this->getPresenterInstance()->redirect('this', $parameters);
+    }
 
 }
