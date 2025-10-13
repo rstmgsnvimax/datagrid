@@ -3333,7 +3333,7 @@ class DataGrid extends Control
 	private function redirectBackLink(string $gridName): void
     {
         $request = $this->getPresenterInstance()->getRequest();
-        if (!$request->hasFlag('restored') && !$request->isMethod('POST')) {
+        if (!$request->hasFlag('restored') || !$request->isMethod('POST')) {
             return;
         }
         $parameters = $request->getParameters();
